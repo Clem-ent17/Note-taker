@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
     crossorigin="anonymous">
   <link rel="stylesheet" href="/assets/css/styles.css">
+  <script src="https://code.jquery.com/jquery.js"></script>
 </head>
 
 <body>
@@ -35,6 +36,29 @@
       </div>
     </div>
   </div>
+
+<!-- This code handles the data, and send it to the servor. -->
+  <script type="text/javascript">
+    $(".save-note").on("click", function(event) {
+      event.preventDefault();
+      var newNote = {
+        title : $(".note-title").val().trim(),
+        text : $(".note-textarea").val().trim()
+      }
+
+      $.post("/api/notes", newNote)
+        .then(function(data) {
+          console.log("note", data);
+          alert("Another amazing idea save in your note taker!");
+        });
+    });
+
+
+    // $(".new-note").on("click", function(event) {
+    //   $(".note-title").text("")
+    //   $(".note-textarea").text("")
+    // })
+  </script>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="/assets/js/index.js"></script>

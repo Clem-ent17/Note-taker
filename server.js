@@ -16,9 +16,6 @@ app.use(express.json());
 // Sets up the Express app to handle the custom CSS
 app.use(express.static(__dirname + '/public'));
 
-// user input notes (DATA)
-// =============================================================
-var notes = [];
 
 // Routes
 // =============================================================
@@ -34,20 +31,41 @@ app.get("/notes", function(req, res) {
 
 // Basic route that sends the user to the db.json
 app.get("/api/notes", function(req, res) {
-    res.sendFile(path.join(__dirname, "db.json"));
+    res.sendFile(path.join(__dirname, "db/db.json"));
 });
 
 
 // Create New Reservations - takes in JSON input
 app.post("/api/notes", function(req, res) {
-    // req.body hosts is equal to the JSON post sent from the user
-    var newNote = req.body;
-    console.log(newNote);
+    fs.readFile(path.join(__dirname, "db/db.json"), (err, data) => {
+        // if error throw error
+        if (err) throw err;
 
-    notes.push(newNote);
+        // Collect db.json data and stock it into variable
+        var notes = JSON.parse(data);
+        
+        // variable to collect information from notes.html
+        var noteCollect = req.body;
 
-    res.json(newNote);
+        // variable to create a new note
+        var newNote = {
+            title: noteCollect.title,
+            text: noteCollect.text
+        }
+
+        // Pushing new note into the notes array
+        notes.push(newNote)
+        //JSON function response
+        res.json(notes)
+
+        // Write db.json with new note
+        fs.writeFile(path.join(__dirname, "db/db.json"), JSON.stringify(notes), (err, data) => {
+            // if error throw error
+            if (err) throw err;
+        })
+    })
 });
+
 
 // Starts the server to begin listening
 // =============================================================
