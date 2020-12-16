@@ -7,7 +7,7 @@ const fs = require("fs");
 // Sets up the Express App
 // =============================================================
 const app = express();
-const PORT = 3800;
+var PORT = process.env.PORT || 3001;
 
 // Sets up the Express app to handle data parsing
 // =============================================================
@@ -35,7 +35,7 @@ app.get("/api/notes", function(req, res) {
 });
 
 
-// Create New Reservations - takes in JSON input
+// Create New Note - takes in JSON input
 app.post("/api/notes", function(req, res) {
     fs.readFile(path.join(__dirname, "db/db.json"), (err, data) => {
         // if error throw error
