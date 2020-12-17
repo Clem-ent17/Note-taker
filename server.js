@@ -47,16 +47,20 @@ app.post("/api/notes", function(req, res) {
         // variable to collect information from notes.html
         var noteCollect = req.body;
 
+        // variable to a unique ID to every notes
+        var newNoteId = notes.length + 1;
+
         // variable to create a new note
         var newNote = {
+            id: newNoteId,
             title: noteCollect.title,
             text: noteCollect.text
-        }
+        };
 
         // Pushing new note into the notes array
-        notes.push(newNote)
+        notes.push(newNote);
         //JSON function response
-        res.json(notes)
+        res.json(notes);
 
         // Write db.json with new note
         fs.writeFile(path.join(__dirname, "db/db.json"), JSON.stringify(notes), (err, data) => {
@@ -64,8 +68,34 @@ app.post("/api/notes", function(req, res) {
             if (err) throw err;
         })
     })
-});
+})
 
+// Delete note
+app.delete("/api/notes/:id", function(req, res) {
+    // read the db.json file to access data
+    fs.readFile("db/db.json", function(err, data) {
+        // id clicked
+        const id = req.params;
+        // notes array returning objects
+        var notes = JSON.parse(data);
+
+        // note index clicked -
+        const notesIndex = notes.findIndex(p => p.id == id);
+
+        // splice will delete the corresponding note to the array
+        notes.splice(notesIndex, 1);
+
+        // Write db.json with new note
+        fs.writeFile(path.join(__dirname, "db/db.json"), JSON.stringify(notes, null, 2), (err, data) => {
+            // if error throw error
+            if (err) throw err;
+            console.log("Note successfully delete from file.");
+        })
+
+        // send the the note array
+        res.sendFile(path.join(__dirname, "/db/db.json")); 
+    })
+})
 
 // Starts the server to begin listening
 // =============================================================
